@@ -4,7 +4,7 @@
   "description": "Esse é uma demonstração do uso do Serverless Framework.",
   "main": "index.js",
   "scripts": {
-    "start": "sls offline start",
+    "start": "sls offline start --stage local",
     "test": "jest"
   },
   "author": "Alex Ribeiro",
@@ -16,6 +16,9 @@
     "serverless-offline": "^6.1.4"
   },
   "dependencies": {
-    "aws-sdk": "^2.657.0"
+    "@hapi/joi": "^15.1.1",
+    "aws-sdk": "^2.657.0",
+    "dynamodb": "^1.2.1",
+    "uuid": "^7.0.3"
   }
 }

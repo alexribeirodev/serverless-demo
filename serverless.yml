@@ -3,6 +3,17 @@ service:
 
 frameworkVersion: ">=1.0.0 <2.0.0"
 
+plugins:
+  - serverless-dynamodb-local
+  - serverless-offline
+
+package:
+  include:
+    - src/**
+  exclude:
+    - .git/**
+    - __tests__/**
+
 custom:
   myStage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-1'}
@@ -11,7 +22,7 @@ custom:
     port: 3000
   dynamodb:
     stages:
-      - dev
+      - local
     start:
       port: 8000
       inMemory: true
@@ -29,22 +40,79 @@ provider:
   environment:
     STAGE: ${self:custom.myStage}
     REGION: ${self:custom.region}
+    USERS_TABLE: users-${self:custom.myStage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:RemoveItem
+      Resource: "*"
 
 functions:
   helloWorld:
-    handler: src/endpoints/index.handler
+    handler: src/endpoints/get.handler
+    memorySize: 128
+    description: Hello World!
     events:
       - http:
-          path: /
           method: get
+          path: /
+  usersGet:
+    handler: src/endpoints/users/get.handler
+    memorySize: 128
+    description: Get user by ID
+    events:
+      - http:
+          method: get
+          path: /users/{id}
+  usersList:
+    handler: src/endpoints/users/list.handler
+    memorySize: 128
+    description: Get all users
+    events:
+      - http:
+          method: get
+          path: /users
+  usersPost:
+    handler: src/endpoints/users/post.handler
+    memorySize: 128
+    description: Create user
+    events:
+      - http:
+          method: post
+          path: /users
+  usersPut:
+    handler: src/endpoints/users/put.handler
+    memorySize: 128
+    description: Update user by ID
+    events:
+      - http:
+          method: put
+          path: /users/{id}
+  usersDelete:
+    handler: src/endpoints/users/delete.handler
+    memorySize: 128
+    description: Delete user by ID
+    events:
+      - http:
+          method: delete
+          path: /users/{id}
 
-package:
-  include:
-    - src/**
-  exclude:
-    - .git/**
-    - __tests__/**
-
-plugins:
-  - serverless-dynamodb-local
-  - serverless-offline
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.USERS_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
