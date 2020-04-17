@@ -1,0 +1,21 @@
+{
+  "name": "serverless-demo",
+  "version": "1.0.0",
+  "description": "Esse é uma demonstração do uso do Serverless Framework.",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline start",
+    "test": "jest"
+  },
+  "author": "Alex Ribeiro",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^25.3.0",
+    "serverless": "^1.67.3",
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-offline": "^6.1.4"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.657.0"
+  }
+}
