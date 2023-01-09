@@ -13,7 +13,7 @@
     "jest": "^25.3.0",
     "serverless": "^1.67.3",
     "serverless-dynamodb-local": "^0.2.39",
-    "serverless-offline": "^6.1.4"
+    "serverless-offline": "^12.0.4"
   },
   "dependencies": {
     "@hapi/joi": "^15.1.1",
